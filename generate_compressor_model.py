@@ -12,14 +12,14 @@ WHITESPACE = b" \t\n\r\x0b\x0c\xc2\xad"
 PUNCTUATION = b"!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 TABLE_GO = """package models
 
-func MODEL_NAME() *shoco.Model {
+func modelName() *shoco.Model {{
     check(nameModel)
     return nameModel
-}
+}}
 
-var nameModel = &shoco.Model{
-    ChrsByChrId: []byte{{chrs}},
-    ChrIdsByChr: [256]byte{{chrs_reversed}},
+var nameModel = &shoco.Model{{
+    ChrsByChrID: []byte{{ {chrs} }},
+    ChrIdsByChr: [256]int8{{ {chrs_reversed} }},
     SuccessorIDsByChrIDAndChrID: [][]int8{{
         {{{successors_reversed}}}
     }},
@@ -27,11 +27,11 @@ var nameModel = &shoco.Model{
         {{{chrs_by_chr_and_successor_id}}}
     }},
     Packs: []shoco.Pack{{
-        {packlines}
+        {pack_lines}
     }},
     MinChr: {min_chr},
-    MacSuccessorN: {max_successor_len},
-}
+    MaxSuccessorN: {max_successor_len},
+}}
 """
 
 # TABLE_C = """#ifndef _SHOCO_INTERNAL
@@ -91,7 +91,7 @@ var nameModel = &shoco.Model{
 # }};
 # """
 
-PACK_LINE = "{{ Word: {word:#x}, BytesPacked: {packed}, BytesUnpacked: {unpacked}, Offsets: [8]uint{{offsets}}, Masks: [8]int16{{masks}}, }}"
+PACK_LINE = "{{ Word: {word:#x}, BytesPacked: {packed}, BytesUnpacked: {unpacked}, Offsets: [8]uint{{ {offsets} }}, Masks: [8]int16{{ {masks} }}, }}"
 # PACK_LINE = "{{ {word:#x}, {packed}, {unpacked}, {{ {offsets} }}, {{ {masks} }}, {header_mask:#x}, {header:#x} }}"
 
 def accumulate(seq, start=0):
@@ -288,6 +288,7 @@ def nearest_lg(number):
 def main():
     parser = argparse.ArgumentParser(description="Generate a succession table for 'shoco'.")
     parser.add_argument("file", nargs="*", help="The training data file(s). If no input file is specified, the input is read from STDIN.")
+    parser.add_argument("-n", "--name", type=str, help="Name of your model.")
     parser.add_argument("-o", "--output", type=str, help="Output file for the resulting succession table.")
     parser.add_argument("--split", choices=["newline", "whitespace", "none"], default="newline", help=r"Split the input into chunks at this separator. Default: newline")
     parser.add_argument("--strip", choices=["whitespace", "punctuation", "none"], default="whitespace", help="Remove leading and trailing characters from each chunk. Default: whitespace")
@@ -413,6 +414,6 @@ def main():
             f.write(out)
             log("done.")
 
+
 if __name__ == "__main__":
     main()
-

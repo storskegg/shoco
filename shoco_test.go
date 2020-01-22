@@ -15,8 +15,8 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/tmthrgd/shoco"
-	"github.com/tmthrgd/shoco/models"
+	"github.com/storskegg/shoco"
+	"github.com/storskegg/shoco/models"
 )
 
 func testCompress(in string, proposed bool) string {
