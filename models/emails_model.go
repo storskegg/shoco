@@ -9,17 +9,18 @@
 
 package models
 
-import "github.com/tmthrgd/shoco"
+import "github.com/storskegg/shoco"
 
 // Emails is a model optimized for compressing email addresses.
 //
 // It was trained against a sample of 2,000 email addresses using the
 // --optimize-encoding flag. It achieves good compression on short strings
 // consisting of just email addresses.
-func Emails() *shoco.Model {
-	check(emailsModel)
-	return emailsModel
-}
+//func Emails() *shoco.Model {
+//	check(emailsModel)
+//	return emailsModel
+//}
+var EmailsModel = emailsModel
 
 var emailsModel = &shoco.Model{
 	ChrsByChrID: []byte{'.', 'e', 'o', 'a', 'n', 's', 'r', 'c', 'i', 'l', '@', 't', 'h', 'u', 'm', 'd', 'g', 'p', 'y', 'b', 'w', 'k', 'f', 'v', 'j', '-', '1', '0', 'x', 'z', '2', '8'},

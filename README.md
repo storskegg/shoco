@@ -1,16 +1,16 @@
 # shoco
 
-[![GoDoc](https://godoc.org/github.com/tmthrgd/shoco?status.svg)](https://godoc.org/github.com/tmthrgd/shoco)
-[![Build Status](https://travis-ci.org/tmthrgd/shoco.svg?branch=master)](https://travis-ci.org/tmthrgd/shoco)
+[![GoDoc](https://godoc.org/github.com/storskegg/shoco?status.svg)](https://godoc.org/github.com/storskegg/shoco)
+[![Build Status](https://travis-ci.org/storskegg/shoco.svg?branch=master)](https://travis-ci.org/storskegg/shoco)
 
 **shoco** is a Golang package, based on [the **shoco** C library](https://github.com/Ed-von-Schleck/shoco), to compress and decompress short strings. It is very fast and easy to use. The default compression model is optimized for english words, but it is possible to generate your own compression model based on your specific input data.
 
-Compression models can be found in the [models package](https://godoc.org/github.com/tmthrgd/shoco/models).
+Compression models can be found in the [models package](https://godoc.org/github.com/storskegg/shoco/models).
 
 ## Download
 
 ```
-go get github.com/tmthrgd/shoco
+go get github.com/storskegg/shoco
 ```
 
 ## Benchmark

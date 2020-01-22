@@ -6,7 +6,7 @@
 // Package models contains various compression models for shoco.
 package models
 
-import "github.com/tmthrgd/shoco"
+import "github.com/storskegg/shoco"
 
 func check(model *shoco.Model) {
 	// The call to Compress is used for it's side-effect of
