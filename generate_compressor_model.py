@@ -8,23 +8,27 @@ import itertools
 import re
 import sys
 
+INDENT_1 = "\n    "
+BRACE_INDENT_2 = "},\n        {"
 WHITESPACE = b" \t\n\r\x0b\x0c\xc2\xad"
 PUNCTUATION = b"!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 TABLE_GO = """package models
 
-func modelName() *shoco.Model {{
-    check(nameModel)
-    return nameModel
+import "github.com/storskegg/shoco"
+
+func {model_name_title}Model() *shoco.Model {{
+    check({model_name_lower}Model)
+    return {model_name_lower}Model
 }}
 
-var nameModel = &shoco.Model{{
+var {model_name_lower}Model = &shoco.Model{{
     ChrsByChrID: []byte{{ {chrs} }},
     ChrIdsByChr: [256]int8{{ {chrs_reversed} }},
     SuccessorIDsByChrIDAndChrID: [][]int8{{
-        {{{successors_reversed}}}
+        {{{successors_reversed}}},
     }},
     ChrsByChrAndSuccessorID: [][]byte{{
-        {{{chrs_by_chr_and_successor_id}}}
+        {{{chrs_by_chr_and_successor_id}}},
     }},
     Packs: []shoco.Pack{{
         {pack_lines}
@@ -242,7 +246,7 @@ def bigrams(sequence):
 
 
 def format_int_line(items):
-    return r", ".join([r"{}".format(k) for k in items])
+    return r", ".join([r"{}".format(k) for k in items]) + ", "
 
 
 def escape(char):
@@ -250,7 +254,8 @@ def escape(char):
 
 
 def format_chr_line(items):
-    return r", ".join([r"{}".format(escape(k)) for k in items])
+    return r", ".join([r"{}".format(escape(k)) for k in items]) + ", "
+
 
 def chunkinator(files, split, strip):
     if files:
@@ -305,6 +310,8 @@ def main():
     chars_count = 1 << args.max_leading_char_bits
     successors_count = 1 << args.max_successor_bits
 
+    model_name_lower = args.name.lower()
+    model_name_title = args.name.title()
 
     log("finding bigrams ... ", end="")
     sys.stdout.flush()
@@ -375,7 +382,7 @@ def main():
     log("formating table file ... ", end="")
     sys.stdout.flush()
 
-    pack_lines_formated = ",\n  ".join(
+    pack_lines_formated = ",\n        ".join(
         PACK_LINE.format(
             word=best_encodings[i].word,
             packed=best_encodings[i].packed,
@@ -386,6 +393,15 @@ def main():
             header=best_encodings[i].header_code,
         )
         for i in range(args.encoding_types)
+    ) + ","
+
+    successors_reversed_joined = BRACE_INDENT_2.join(
+        format_int_line(l)
+        for l in successors_reversed.values()
+    )
+    chrs_by_chr_and_successor_id_joined = BRACE_INDENT_2.join(
+        format_chr_line(l)
+        for l in chrs_by_chr_and_successor_id
     )
 
     out = TABLE_GO.format(
@@ -393,15 +409,17 @@ def main():
         successors_count=successors_count,
         chrs=format_chr_line(successors.keys()),
         chrs_reversed=format_int_line(chrs_reversed),
-        successors_reversed="},\n  {".join(format_int_line(l) for l in successors_reversed.values()),
-        chrs_by_chr_and_successor_id="},\n  {".join(format_chr_line(l) for l in chrs_by_chr_and_successor_id),
+        successors_reversed=successors_reversed_joined,
+        chrs_by_chr_and_successor_id=chrs_by_chr_and_successor_id_joined,
 
         pack_lines=pack_lines_formated,
         max_successor_len=max_encoding_len - 1,
         max_elements_len=MAX_CONSECUTIVES,
         pack_count=args.encoding_types,
         max_chr=max_chr,
-        min_chr=min_chr
+        min_chr=min_chr,
+        model_name_lower=model_name_lower,
+        model_name_title=model_name_title
     )
     log("done.")
 
