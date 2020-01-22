@@ -9,7 +9,7 @@
 
 package models
 
-import "github.com/tmthrgd/shoco"
+import "github.com/storskegg/shoco"
 
 // Emails is a model optimized for compressing email addresses.
 //
